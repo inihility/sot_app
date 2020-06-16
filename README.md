@@ -1,6 +1,6 @@
-# sot_app
+# Companion App for Sea of Thieves
 
-A new Flutter project.
+A simple companion app for Sea of Thieves created in Flutter.
 
 ## Getting Started
 
