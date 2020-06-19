@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import '../models/island.dart';
+import '../models/region.dart';
+import '../models/location_animal.dart';
 
 class Db{
   Db._privateConstructor();
@@ -50,7 +52,7 @@ class Db{
     });
   }
 
-  getIslands() async{
+  Future<List<Island>> getIslands() async{
     final db = await database;
     List<Map> list = await db.rawQuery("SELECT * FROM island");
     List<Island> islandList = new List();
@@ -58,6 +60,26 @@ class Db{
       islandList.add(Island.fromMap(element));
     });
     return islandList;
+  }
+
+  Future<List<Region>> getRegions() async{
+    final db = await database;
+    List<Map> list = await db.rawQuery("SELECT * FROM region");
+    List<Region> regionList = new List();
+    list.forEach((element) {
+      regionList.add(Region.fromMap(element));
+    });
+    return regionList;
+  }
+
+  Future<List<LocationAnimal>> getAnimal(String animal) async{
+    final db = await database;
+    List<Map> list = await db.rawQuery("SELECT * FROM " + animal);
+    List<LocationAnimal> animalList = new List();
+    list.forEach((element) {
+      animalList.add(LocationAnimal.fromMap(element));
+    });
+    return animalList;
   }
 
   listTables() async{

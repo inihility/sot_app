@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sot_app/utils/data.dart';
 import '../models/island.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:photo_view/photo_view.dart';
+import '../utils/db.dart';
 
 class IslandListView extends StatefulWidget {
   IslandListView({Key key}) : super(key: key);
@@ -14,51 +14,26 @@ class IslandListView extends StatefulWidget {
 class _IslandListViewState extends State<IslandListView> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Data.instance.islands,
-      builder: (context, snapshot, ){
-         switch (snapshot.connectionState) {
-          case ConnectionState.none:
-          case ConnectionState.waiting:
-          case ConnectionState.active:
-            return Container(
-              alignment: Alignment.center,
-              child: Text("Loading"),
-            );
-            break;
-          case ConnectionState.done:
-            if (snapshot.hasError) {
-              // return whatever you'd do for this case, probably an error
-              return Container(
-                alignment: Alignment.center,
-                child: Text("Error: ${snapshot.error}"),
-              );
-            }
-            List<Island> data = snapshot.data;
-            return OrientationBuilder(
-              builder: (BuildContext context, Orientation orientation) {
-                return Container(
-                  child: new GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: (orientation == Orientation.portrait) ? 2 : 3,
-                      childAspectRatio: 0.75),
-                    reverse: false,
-                    itemBuilder: (_, int index) => EachList(data[index]),
-                    itemCount: data.length,
-                  ),
-                );
-              },
-            );
-            break;
-        }
+    return OrientationBuilder(
+    builder: (BuildContext context, Orientation orientation) {
+        return Container(
+          child: new GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: (orientation == Orientation.portrait) ? 2 : 3,
+              childAspectRatio: 0.7),
+            reverse: false,
+            itemBuilder: (_, int index) => EachCell(Data.instance.islands[index]),
+            itemCount: Data.instance.islands.length,
+          ),
+        );
       },
     );
   }
 }
 
-class EachList extends StatelessWidget {
+class EachCell extends StatelessWidget {
   final Island island;
-  EachList(this.island);
+  EachCell(this.island);
   @override
   Widget build(BuildContext context) {
     // print(island.id);
@@ -75,25 +50,57 @@ class EachList extends StatelessWidget {
                             builder: (context, scrollController) =>
                                 Image.asset(path),
                           ),
-        child: new Container(
+        child: Container(
           padding: EdgeInsets.all(8.0),
-          child: new Column(
+          child: Column(
             children: <Widget>[
-              // new CircleAvatar(
-              //   radius: 64,
-              //   child: Image.asset(path),
-              // ),
-              Image.asset(path),
-              new Padding(padding: EdgeInsets.only(right: 10.0)),
-              new Text(
+              Stack(
+                children: <Widget>[
+                  Image.asset('assets/images/map/island_bg01.png'),
+                  Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Image.asset(path))
+                  ),
+                ],
+              ),
+              Padding(padding: EdgeInsets.only(right: 10.0)),
+              Text(
                 island.name,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16.0),
-              )
+              ),
+              Text(
+                island.coord,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.0),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: getAnimalIcons(island.id),
+                )
             ],
           ),
         ),
       )
     );
+  }
+
+  List<Widget> getAnimalIcons(String id){
+    List<Widget> icons = List();
+    double iconSize = 48;
+    if ((Data.instance.location_chickens.singleWhere((it) => it.id == id,
+      orElse: () => null)) != null) {
+        icons.add(Image.asset('assets/images/icon_chicken.png', height: iconSize, width: iconSize));
+    }
+    if ((Data.instance.location_pigs.singleWhere((it) => it.id == id,
+      orElse: () => null)) != null) {
+        icons.add(Image.asset('assets/images/icon_pig.png', height: iconSize, width: iconSize));
+    }
+    if ((Data.instance.location_snakes.singleWhere((it) => it.id == id,
+      orElse: () => null)) != null) {
+        icons.add(Image.asset('assets/images/icon_snake.png', height: iconSize, width: iconSize));
+    }
+    return icons;
   }
 }
