@@ -65,20 +65,49 @@ class EachCell extends StatelessWidget {
                 ],
               ),
               Padding(padding: EdgeInsets.only(right: 10.0)),
+              SizedBox(
+                height: 4,
+              ),
               Text(
                 island.name,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16.0),
+                style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
               ),
-              Text(
-                island.coord,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16.0),
+              SizedBox(
+                height: 4,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: getAnimalIcons(island.id),
-                )
+              Padding(
+                padding: EdgeInsets.only(left: 12.0, right: 12.0),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      island.coord,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    Spacer(),
+                  ] + getAnimalIcons(island.id),
+                ),
+              ),
+              // Row(
+              //   children: <Widget>[
+              //     Text(
+              //       island.coord,
+              //       textAlign: TextAlign.center,
+              //       style: TextStyle(fontSize: 16.0),
+              //     ),
+              //     Spacer(),
+              //   ] + getAnimalIcons(island.id),
+              // ),
+              // Text(
+              //   island.coord,
+              //   textAlign: TextAlign.center,
+              //   style: TextStyle(fontSize: 16.0),
+              // ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: getAnimalIcons(island.id),
+              // )
             ],
           ),
         ),
@@ -88,7 +117,7 @@ class EachCell extends StatelessWidget {
 
   List<Widget> getAnimalIcons(String id){
     List<Widget> icons = List();
-    double iconSize = 48;
+    double iconSize = 32;
     if ((Data.instance.location_chickens.singleWhere((it) => it.id == id,
       orElse: () => null)) != null) {
         icons.add(Image.asset('assets/images/icon_chicken.png', height: iconSize, width: iconSize));
